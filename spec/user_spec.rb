@@ -21,6 +21,10 @@ describe User do
       @user = User.new(name: 'Jean Michel Olivier Sebastien', email: "roger@lewagon.org")
     end
 
+    after do
+      User.destroy_all if User.any?
+    end
+
     describe '#name' do
       it 'must exist' do
         @user.name = nil
@@ -29,6 +33,13 @@ describe User do
     end
 
     describe '#email' do
+      it 'must be unique' do
+        cloned_user = @user.clone
+        cloned_user.save
+
+        @user.valid?.must_equal false
+      end
+
       it 'must exist' do
         @user.email = nil
         @user.valid?.must_equal false
